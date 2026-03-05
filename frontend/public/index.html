@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTel Fact Generator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #0b0d12;
+      color: #e6e6e6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 640px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, hsl(228, 37%, 60%), hsl(41, 100%, 48%));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: #999;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .fact-card {
+      background: #161922;
+      border: 1px solid #2a2d3a;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+      transition: border-color 0.3s;
+    }
+
+    .fact-card:hover {
+      border-color: hsl(228, 37%, 49%);
+    }
+
+    .fact-text {
+      font-size: 1.15rem;
+      line-height: 1.6;
+    }
+
+    .fact-text.placeholder {
+      color: #555;
+      font-style: italic;
+    }
+
+    .fact-text.error {
+      color: #e74c3c;
+    }
+
+    .fact-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: hsl(41, 100%, 48%);
+    }
+
+    .fact-title:empty {
+      display: none;
+    }
+
+    .fact-source {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
+      color: #999;
+      border: 1px solid #2a2d3a;
+      border-radius: 20px;
+    }
+
+    .fact-source:empty {
+      display: none;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #fff;
+      background: hsl(228, 37%, 49%);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover {
+      background: hsl(228, 37%, 55%);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      background: hsl(228, 15%, 35%);
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <svg class="logo" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="64" cy="64" r="60" fill="none" stroke="hsl(228, 37%, 49%)" stroke-width="3"/>
+      <circle cx="64" cy="40" r="8" fill="hsl(41, 100%, 48%)"/>
+      <circle cx="40" cy="80" r="8" fill="hsl(41, 100%, 48%)"/>
+      <circle cx="88" cy="80" r="8" fill="hsl(41, 100%, 48%)"/>
+      <line x1="64" y1="48" x2="44" y2="73" stroke="hsl(228, 37%, 60%)" stroke-width="2.5"/>
+      <line x1="64" y1="48" x2="84" y2="73" stroke="hsl(228, 37%, 60%)" stroke-width="2.5"/>
+      <line x1="48" y1="80" x2="80" y2="80" stroke="hsl(228, 37%, 60%)" stroke-width="2.5"/>
+    </svg>
+
+    <h1>OTel Fact Generator</h1>
+    <p class="subtitle">Fun facts powered by OpenTelemetry project data</p>
+
+    <div class="fact-card">
+      <h2 id="fact-title" class="fact-title"></h2>
+      <p id="fact" class="fact-text placeholder">Click the button to generate an OTel fact</p>
+      <span id="fact-source" class="fact-source"></span>
+    </div>
+
+    <button id="generate" class="btn" onclick="generateFact()">Generate Fact</button>
+  </div>
+
+  <script>
+    async function generateFact() {
+      const btn = document.getElementById("generate");
+      const factEl = document.getElementById("fact");
+      const titleEl = document.getElementById("fact-title");
+      const sourceEl = document.getElementById("fact-source");
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Generating...';
+      titleEl.textContent = "";
+      sourceEl.textContent = "";
+      factEl.className = "fact-text placeholder";
+      factEl.textContent = "Fetching fact from the service chain...";
+
+      try {
+        const res = await fetch("/api/fact");
+        const data = await res.json();
+
+        if (data.error) {
+          factEl.className = "fact-text error";
+          factEl.textContent = data.error;
+        } else {
+          titleEl.textContent = data.title || "";
+          factEl.className = "fact-text";
+          factEl.textContent = data.fact;
+          if (data.source_type) {
+            sourceEl.textContent = "From: " + data.source_type;
+          }
+        }
+      } catch (err) {
+        factEl.className = "fact-text error";
+        factEl.textContent = "Failed to connect to the backend services.";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Generate Fact";
+      }
+    }
+  </script>
+</body>
+</html>

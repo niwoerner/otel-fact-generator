@@ -1,0 +1,23 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "4000:3000"
+    environment:
+      - CONTEXT_FETCHER_URL=http://context-fetcher:8080
+    depends_on:
+      - context-fetcher
+
+  context-fetcher:
+    build: ./context-fetcher
+    environment:
+      - FACT_GENERATOR_URL=http://fact-generator:5000
+    depends_on:
+      - fact-generator
+
+  fact-generator:
+    build: ./fact-generator
+    env_file:
+      - .env
+    environment:
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
