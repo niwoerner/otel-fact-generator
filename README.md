@@ -42,7 +42,15 @@ docker compose up --build
 
 Open http://localhost:4000 and click **Generate Fact**.
 
-By default, spans are written to service logs with a console exporter. If `OTEL_EXPORTER_OTLP_ENDPOINT` or `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` is set, all services export OTLP/HTTP traces instead.
+## Local Trace Visualization
+
+`docker compose up --build` now also starts an OpenTelemetry Collector and Jaeger.
+
+- Generate traffic via http://localhost:4000
+- Open Jaeger UI: http://localhost:16686
+- Select service (`frontend`, `context-fetcher`, or `fact-generator`) and click **Find Traces**
+
+By default in Docker Compose, services export traces to `http://otel-collector:4318`. You can override with `OTEL_EXPORTER_OTLP_ENDPOINT` or `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`.
 
 ## Services
 

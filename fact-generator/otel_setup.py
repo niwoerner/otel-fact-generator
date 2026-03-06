@@ -3,7 +3,6 @@ import os
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
-from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
@@ -25,4 +24,3 @@ def setup_otel(app):
     trace.set_tracer_provider(tracer_provider)
     FlaskInstrumentor().instrument_app(app)
     RequestsInstrumentor().instrument()
-    HTTPXClientInstrumentor().instrument()
