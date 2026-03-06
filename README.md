@@ -2,6 +2,8 @@
 
 Demo app with 3 uninstrumented microservices that generate fun OpenTelemetry facts. Designed for adding OTel instrumentation as a follow-up exercise.
 
+This setup now includes Grafana LGTM so all telemetry lands in one place.
+
 ## Architecture
 
 ```
@@ -40,6 +42,12 @@ docker compose up --build
 ```
 
 Open http://localhost:4000 and click **Generate Fact**.
+
+Open Grafana at http://localhost:3000 (user: `admin`, password: `admin`) to inspect traces, metrics, and logs.
+
+## Telemetry Destination
+
+All three apps export OTLP over HTTP to `http://lgtm:4318` inside Docker Compose.
 
 ## Services
 
