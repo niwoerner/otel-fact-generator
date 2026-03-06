@@ -9,13 +9,13 @@ Demo app with 3 uninstrumented microservices that generate fun OpenTelemetry fac
                          │          Context Fetcher (Go :8080)         │
                          │                                             │
 ┌──────────┐   GET       │  ┌──────────────────────────────────────┐   │
-│          │  /api/fact  │  │  GET github.com/.../commits         │   │
-│ Browser  │────────────▶│  │  (recent OTel Collector commits)    │   │
+│          │  /api/fact  │  │  GET github.com/.../commits          │   │
+│ Browser  │────────────▶│  │  (recent OTel Collector commits)     │   │
 │          │             │  └──────────────────────────────────────┘   │
 └──────────┘             │                                             │
      ▲       Frontend    │  ┌──────────────────────────────────────┐   │
-     │      (Node :3000) │  │  GET raw.githubusercontent.com/...  │   │
-     │                   │  │  (random OTel docs concept page)    │   │
+     │      (Node :3000) │  │  GET raw.githubusercontent.com/...   │   │
+     │                   │  │  (random OTel docs concept page)     │   │
      │                   │  └──────────────────────────────────────┘   │
      │                   │                                             │
      │                   │         │ POST /generate                    │
@@ -26,7 +26,7 @@ Demo app with 3 uninstrumented microservices that generate fun OpenTelemetry fac
      │                   ┌─────────────────────────────────────────────┐
      │                   │       Fact Generator (Python :5000)         │
      │      {"fact":...} │                                             │
-     └───────────────────│  prompt ──▶ LLM (via LiteLLM)              │
+     └───────────────────│  prompt ──▶ LLM (via LiteLLM)               │
                          │             or fallback hardcoded fact      │
                          └─────────────────────────────────────────────┘
 ```
