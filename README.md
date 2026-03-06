@@ -9,7 +9,7 @@ Demo app with 3 uninstrumented microservices that generate fun OpenTelemetry fac
                          │          Context Fetcher (Go :8080)         │
                          │                                             │
 ┌──────────┐   GET       │  ┌──────────────────────────────────────┐   │
-│          │  /api/fact   │  │  GET github.com/.../commits         │   │
+│          │  /api/fact  │  │  GET github.com/.../commits         │   │
 │ Browser  │────────────▶│  │  (recent OTel Collector commits)    │   │
 │          │             │  └──────────────────────────────────────┘   │
 └──────────┘             │                                             │
