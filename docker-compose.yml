@@ -5,6 +5,9 @@ services:
       - "4000:3000"
     environment:
       - CONTEXT_FETCHER_URL=http://context-fetcher:8080
+      - OTEL_SERVICE_NAME=frontend
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}
     depends_on:
       - context-fetcher
 
@@ -12,6 +15,9 @@ services:
     build: ./context-fetcher
     environment:
       - FACT_GENERATOR_URL=http://fact-generator:5000
+      - OTEL_SERVICE_NAME=context-fetcher
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}
     depends_on:
       - fact-generator
 
@@ -21,3 +27,6 @@ services:
       - .env
     environment:
       - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - OTEL_SERVICE_NAME=fact-generator
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-}

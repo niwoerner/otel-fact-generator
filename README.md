@@ -1,6 +1,6 @@
 # otel-fact-generator
 
-Demo app with 3 uninstrumented microservices that generate fun OpenTelemetry facts. Designed for adding OTel instrumentation as a follow-up exercise.
+Demo app with 3 microservices that generate fun OpenTelemetry facts, now instrumented with OpenTelemetry tracing.
 
 ## Architecture
 
@@ -36,10 +36,13 @@ Demo app with 3 uninstrumented microservices that generate fun OpenTelemetry fac
 ```bash
 cp .env.example .env
 # optionally set OPENAI_API_KEY in .env for real LLM facts
+# optionally set OTEL_EXPORTER_OTLP_ENDPOINT in .env to export spans to a collector
 docker compose up --build
 ```
 
 Open http://localhost:4000 and click **Generate Fact**.
+
+By default, spans are written to service logs with a console exporter. If `OTEL_EXPORTER_OTLP_ENDPOINT` or `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` is set, all services export OTLP/HTTP traces instead.
 
 ## Services
 
