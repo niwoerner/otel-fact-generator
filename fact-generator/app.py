@@ -4,8 +4,10 @@ import random
 
 from flask import Flask, request, jsonify
 import litellm
+from otel_setup import setup_otel
 
 app = Flask(__name__)
+setup_otel(app)
 
 FALLBACK_FACTS = [
     "OpenTelemetry is the second most active CNCF project after Kubernetes.",
@@ -54,9 +56,18 @@ def generate():
             "schema": {
                 "type": "object",
                 "properties": {
-                    "title": {"type": "string", "description": "Short catchy headline (3-6 words)"},
-                    "fact": {"type": "string", "description": "The fun fact, 1-2 sentences"},
-                    "source_type": {"type": "string", "enum": ["commit", "documentation"]},
+                    "title": {
+                        "type": "string",
+                        "description": "Short catchy headline (3-6 words)",
+                    },
+                    "fact": {
+                        "type": "string",
+                        "description": "The fun fact, 1-2 sentences",
+                    },
+                    "source_type": {
+                        "type": "string",
+                        "enum": ["commit", "documentation"],
+                    },
                 },
                 "required": ["title", "fact", "source_type"],
             },
@@ -72,11 +83,13 @@ def generate():
             response_format=response_format,
         )
         result = json.loads(response.choices[0].message.content)
-        return jsonify({
-            "title": result["title"],
-            "fact": result["fact"],
-            "source_type": result["source_type"],
-        })
+        return jsonify(
+            {
+                "title": result["title"],
+                "fact": result["fact"],
+                "source_type": result["source_type"],
+            }
+        )
     except Exception as e:
         app.logger.warning("LLM call failed (%s), returning fallback fact", e)
         return jsonify({"fact": random.choice(FALLBACK_FACTS)})
