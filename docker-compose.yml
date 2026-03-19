@@ -1,18 +1,31 @@
 services:
+  lgtm:
+    image: grafana/otel-lgtm:latest
+    ports:
+      - "3888:3000"
+      - "4317:4317"
+      - "4318:4318"
+
   frontend:
     build: ./frontend
     ports:
       - "4000:3000"
     environment:
       - CONTEXT_FETCHER_URL=http://context-fetcher:8080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4318
+      - OTEL_SERVICE_NAME=frontend
     depends_on:
+      - lgtm
       - context-fetcher
 
   context-fetcher:
     build: ./context-fetcher
     environment:
       - FACT_GENERATOR_URL=http://fact-generator:5000
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4318
+      - OTEL_SERVICE_NAME=context-fetcher
     depends_on:
+      - lgtm
       - fact-generator
 
   fact-generator:
@@ -21,3 +34,7 @@ services:
       - .env
     environment:
       - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4318
+      - OTEL_SERVICE_NAME=fact-generator
+    depends_on:
+      - lgtm
