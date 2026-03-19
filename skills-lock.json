@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "opentelemetry-manual-instrumentation": {
+      "source": "niwoerner/opentelemetry-agent-skills",
+      "sourceType": "github",
+      "computedHash": "a65dc80ae8b7af057f265e330b91a680f0a1c55e14ef71f907ba281dfaed1060"
+    },
+    "opentelemetry-sdk-versions": {
+      "source": "niwoerner/opentelemetry-agent-skills",
+      "sourceType": "github",
+      "computedHash": "42cf38946b9dc01bc0c9c25cda809f05a678759052771957f5e8c1da7b427d82"
+    },
+    "opentelemetry-semantic-conventions": {
+      "source": "niwoerner/opentelemetry-agent-skills",
+      "sourceType": "github",
+      "computedHash": "f56393355a18ea85906ffdd477398a381f4ce349e6437bae84773834426f4512"
+    }
+  }
+}
